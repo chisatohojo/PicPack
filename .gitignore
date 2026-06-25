@@ -3,5 +3,6 @@ obj/
 .vs/
 .vscode/
 TestResults/
+dist/
 *.user
 *.suo
