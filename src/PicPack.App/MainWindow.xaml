@@ -1,0 +1,222 @@
+<Window x:Class="PicPack.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="PicPack"
+        Height="720"
+        Width="920"
+        MinHeight="640"
+        MinWidth="780"
+        WindowStartupLocation="CenterScreen"
+        Icon="Assets/app-icon.png"
+        Background="#FFF8FBFD">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="16,9" />
+            <Setter Property="MinWidth" Value="132" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#243142" />
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
+        <Style x:Key="PanelBorder" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#D9E2EC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="18" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" LastChildFill="True" Margin="0,0,0,18">
+            <Image Source="Assets/app-icon.png"
+                   Width="64"
+                   Height="64"
+                   Margin="0,0,16,0"
+                   DockPanel.Dock="Left" />
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="PicPack" FontSize="30" FontWeight="Bold" />
+                <TextBlock x:Name="StatusTextBlock" Text="準備できています" FontSize="13" Foreground="#5A6B7F" />
+            </StackPanel>
+        </DockPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource PanelBorder}" Margin="0,0,0,14">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="フォルダ" Style="{StaticResource SectionTitle}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="入力フォルダ" VerticalAlignment="Center" Margin="0,0,14,10" />
+                <TextBox x:Name="InputFolderTextBox"
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         IsReadOnly="True"
+                         Margin="0,0,10,10" />
+                <Button Grid.Row="1"
+                        Grid.Column="2"
+                        Content="入力フォルダを選択"
+                        Click="SelectInputFolderButton_Click"
+                        Margin="0,0,0,10" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="出力フォルダ" VerticalAlignment="Center" Margin="0,0,14,0" />
+                <TextBox x:Name="OutputFolderTextBox"
+                         Grid.Row="2"
+                         Grid.Column="1"
+                         IsReadOnly="True"
+                         Margin="0,0,10,0" />
+                <Button Grid.Row="2"
+                        Grid.Column="2"
+                        Content="出力フォルダを選択"
+                        Click="SelectOutputFolderButton_Click"
+                        Margin="0" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="0.9*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource PanelBorder}" Margin="0,0,14,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="設定" Style="{StaticResource SectionTitle}" />
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,14">
+                        <TextBlock Text="1フォルダあたりの枚数" VerticalAlignment="Center" Margin="0,0,14,0" />
+                        <TextBox x:Name="FilesPerFolderTextBox"
+                                 Text="3"
+                                 Width="90"
+                                 TextChanged="OptionsChanged" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock Text="処理方式" VerticalAlignment="Center" Margin="0,0,14,0" />
+                        <RadioButton x:Name="CopyRadioButton"
+                                     Content="コピーする"
+                                     GroupName="Mode"
+                                     IsChecked="True"
+                                     Checked="OptionsChanged"
+                                     Margin="0,0,18,0" />
+                        <RadioButton x:Name="MoveRadioButton"
+                                     Content="移動する"
+                                     GroupName="Mode"
+                                     Checked="OptionsChanged" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                <StackPanel>
+                    <TextBlock Text="実行前確認" Style="{StaticResource SectionTitle}" />
+                    <UniformGrid Columns="2" Rows="3">
+                        <TextBlock Text="対象画像枚数" FontWeight="SemiBold" />
+                        <TextBlock x:Name="TargetImageCountTextBlock" Text="-" TextAlignment="Right" />
+                        <TextBlock Text="作成予定フォルダ数" FontWeight="SemiBold" />
+                        <TextBlock x:Name="PlannedFolderCountTextBlock" Text="-" TextAlignment="Right" />
+                        <TextBlock Text="処理方式" FontWeight="SemiBold" />
+                        <TextBlock x:Name="SelectedModeTextBlock" Text="コピー" TextAlignment="Right" />
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1.25*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource PanelBorder}" Margin="0,0,14,0">
+                <StackPanel>
+                    <TextBlock Text="結果" Style="{StaticResource SectionTitle}" />
+                    <TextBlock x:Name="ResultTextBlock"
+                               Text="まだ実行されていません"
+                               TextWrapping="Wrap"
+                               FontSize="15"
+                               LineHeight="23" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="ログ" Style="{StaticResource SectionTitle}" />
+                    <TextBox x:Name="LogTextBox"
+                             Grid.Row="1"
+                             IsReadOnly="True"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             TextWrapping="Wrap"
+                             FontFamily="Consolas"
+                             FontSize="12"
+                             MinHeight="220" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <DockPanel Grid.Row="4" Margin="0,16,0,0" LastChildFill="True">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button x:Name="RunButton"
+                        Content="実行"
+                        Click="RunButton_Click"
+                        Background="#FF6BAE75"
+                        Foreground="White"
+                        BorderBrush="#FF5B9C64" />
+                <Button x:Name="CancelButton"
+                        Content="キャンセル"
+                        Click="CancelButton_Click"
+                        IsEnabled="False"
+                        Background="#FFE86F6F"
+                        Foreground="White"
+                        BorderBrush="#FFD75E5E"
+                        Margin="0" />
+            </StackPanel>
+            <ProgressBar x:Name="ProgressBar"
+                         Height="20"
+                         Minimum="0"
+                         Maximum="1"
+                         Value="0"
+                         VerticalAlignment="Center"
+                         Margin="0,0,16,0" />
+        </DockPanel>
+    </Grid>
+</Window>
