@@ -12,11 +12,13 @@ public partial class MainWindow : Window
     private readonly FolderDistributorService _folderDistributorService = new();
     private CancellationTokenSource? _cancellationTokenSource;
     private int _previewVersion;
+    private bool _isInitialized;
     private bool _isRunning;
 
     public MainWindow()
     {
         InitializeComponent();
+        _isInitialized = true;
         _ = RefreshPreviewAsync();
     }
 
@@ -46,6 +48,11 @@ public partial class MainWindow : Window
 
     private async void OptionsChanged(object sender, RoutedEventArgs e)
     {
+        if (!_isInitialized)
+        {
+            return;
+        }
+
         await RefreshPreviewAsync();
     }
 
