@@ -114,6 +114,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="設定" Style="{StaticResource SectionTitle}" />
 
@@ -125,7 +126,15 @@
                                  TextChanged="OptionsChanged" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,14">
+                        <TextBlock Text="使用するフォルダ数" VerticalAlignment="Center" Margin="0,0,14,0" />
+                        <TextBox x:Name="FolderCountTextBox"
+                                 Text="7"
+                                 Width="90"
+                                 TextChanged="OptionsChanged" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
                         <TextBlock Text="処理方式" VerticalAlignment="Center" Margin="0,0,14,0" />
                         <RadioButton x:Name="CopyRadioButton"
                                      Content="コピーする"
@@ -147,8 +156,8 @@
                     <UniformGrid Columns="2" Rows="3">
                         <TextBlock Text="対象画像枚数" FontWeight="SemiBold" />
                         <TextBlock x:Name="TargetImageCountTextBlock" Text="-" TextAlignment="Right" />
-                        <TextBlock Text="作成予定フォルダ数" FontWeight="SemiBold" />
-                        <TextBlock x:Name="PlannedFolderCountTextBlock" Text="-" TextAlignment="Right" />
+                        <TextBlock Text="使用フォルダ数" FontWeight="SemiBold" />
+                        <TextBlock x:Name="PreviewFolderCountTextBlock" Text="7" TextAlignment="Right" />
                         <TextBlock Text="処理方式" FontWeight="SemiBold" />
                         <TextBlock x:Name="SelectedModeTextBlock" Text="コピー" TextAlignment="Right" />
                     </UniformGrid>

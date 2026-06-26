@@ -34,7 +34,7 @@ public sealed class FolderDistributorService
         return _imageFileFinder.FindImages(inputFolder).Count;
     }
 
-    public static int CalculateFolderIndex(int imageIndex, int filesPerFolder)
+    public static int CalculateFolderIndex(int imageIndex, int filesPerFolder, int folderCount)
     {
         if (imageIndex < 1)
         {
@@ -46,7 +46,13 @@ public sealed class FolderDistributorService
             throw new ArgumentOutOfRangeException(nameof(filesPerFolder), "1フォルダあたりの枚数は1以上で指定してください。");
         }
 
-        return ((imageIndex - 1) / filesPerFolder) + 1;
+        if (folderCount < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(folderCount), "使用するフォルダ数は1以上で指定してください。");
+        }
+
+        var batchIndex = (imageIndex - 1) / filesPerFolder;
+        return (batchIndex % folderCount) + 1;
     }
 
     public static string FormatFolderName(int folderIndex)
@@ -84,7 +90,7 @@ public sealed class FolderDistributorService
 
             var image = images[index];
             var imageIndex = index + 1;
-            var folderIndex = CalculateFolderIndex(imageIndex, options.FilesPerFolder);
+            var folderIndex = CalculateFolderIndex(imageIndex, options.FilesPerFolder, options.FolderCount);
             var folderName = FormatFolderName(folderIndex);
             var destinationFolder = Path.Combine(options.OutputFolder, folderName);
 
@@ -174,6 +180,11 @@ public sealed class FolderDistributorService
         if (options.FilesPerFolder < 1)
         {
             throw new ArgumentException("1フォルダあたりの枚数は1以上で指定してください。", nameof(options));
+        }
+
+        if (options.FolderCount < 1)
+        {
+            throw new ArgumentException("使用するフォルダ数は1以上で指定してください。", nameof(options));
         }
     }
 

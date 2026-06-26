@@ -8,5 +8,7 @@ public sealed class DistributionOptions
 
     public required int FilesPerFolder { get; init; }
 
+    public required int FolderCount { get; init; }
+
     public required DistributionMode Mode { get; init; }
 }

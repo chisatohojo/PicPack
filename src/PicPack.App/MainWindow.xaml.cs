@@ -86,7 +86,7 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(this, "対象画像がありません。", "確認", MessageBoxButton.OK, MessageBoxImage.Information);
             TargetImageCountTextBlock.Text = "0";
-            PlannedFolderCountTextBlock.Text = "0";
+            PreviewFolderCountTextBlock.Text = options.FolderCount.ToString();
             return;
         }
 
@@ -105,11 +105,10 @@ public partial class MainWindow : Window
             }
         }
 
-        var plannedFolderCount = CalculatePlannedFolderCount(images.Count, options.FilesPerFolder);
         var confirmationMessage =
             $"対象画像枚数: {images.Count}\n" +
-            $"作成予定フォルダ数: {plannedFolderCount}\n" +
             $"1フォルダあたりの枚数: {options.FilesPerFolder}\n" +
+            $"使用するフォルダ数: {options.FolderCount}\n" +
             $"処理方式: {GetModeLabel(options.Mode)}\n" +
             $"入力フォルダ: {options.InputFolder}\n" +
             $"出力フォルダ: {options.OutputFolder}";
@@ -169,7 +168,7 @@ public partial class MainWindow : Window
             else
             {
                 ResultTextBlock.Text =
-                    $"完了しました\n対象画像: {result.TotalFiles} 件\n成功: {result.ProcessedFiles} 件\nスキップ: {result.SkippedFiles} 件\n作成フォルダ: {result.CreatedFolderCount} 件";
+                    $"完了しました\n対象画像: {result.TotalFiles} 件\n成功: {result.ProcessedFiles} 件\nスキップ: {result.SkippedFiles} 件\n使用フォルダ数: {options.FolderCount} 件\n新規作成フォルダ: {result.CreatedFolderCount} 件";
                 StatusTextBlock.Text = "完了しました";
             }
 
@@ -207,10 +206,18 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (!Directory.Exists(InputFolderTextBox.Text) || !TryReadFilesPerFolder(out var filesPerFolder))
+        if (!TryReadFolderCount(out var folderCount))
+        {
+            PreviewFolderCountTextBlock.Text = "-";
+        }
+        else
+        {
+            PreviewFolderCountTextBlock.Text = folderCount.ToString();
+        }
+
+        if (!Directory.Exists(InputFolderTextBox.Text) || !TryReadFilesPerFolder(out _))
         {
             TargetImageCountTextBlock.Text = "-";
-            PlannedFolderCountTextBlock.Text = "-";
             return;
         }
 
@@ -223,7 +230,6 @@ public partial class MainWindow : Window
             }
 
             TargetImageCountTextBlock.Text = count.ToString();
-            PlannedFolderCountTextBlock.Text = CalculatePlannedFolderCount(count, filesPerFolder).ToString();
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException)
         {
@@ -233,7 +239,6 @@ public partial class MainWindow : Window
             }
 
             TargetImageCountTextBlock.Text = "-";
-            PlannedFolderCountTextBlock.Text = "-";
             StatusTextBlock.Text = exception.Message;
         }
     }
@@ -245,6 +250,7 @@ public partial class MainWindow : Window
             InputFolder = InputFolderTextBox.Text,
             OutputFolder = OutputFolderTextBox.Text,
             FilesPerFolder = 1,
+            FolderCount = 1,
             Mode = GetSelectedMode()
         };
 
@@ -266,11 +272,18 @@ public partial class MainWindow : Window
             return false;
         }
 
+        if (!TryReadFolderCount(out var folderCount))
+        {
+            MessageBox.Show(this, "使用するフォルダ数は1以上の整数で入力してください。", "確認", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
+        }
+
         options = new DistributionOptions
         {
             InputFolder = InputFolderTextBox.Text,
             OutputFolder = OutputFolderTextBox.Text,
             FilesPerFolder = filesPerFolder,
+            FolderCount = folderCount,
             Mode = GetSelectedMode()
         };
         return true;
@@ -281,19 +294,14 @@ public partial class MainWindow : Window
         return int.TryParse(FilesPerFolderTextBox.Text, out filesPerFolder) && filesPerFolder >= 1;
     }
 
+    private bool TryReadFolderCount(out int folderCount)
+    {
+        return int.TryParse(FolderCountTextBox.Text, out folderCount) && folderCount >= 1;
+    }
+
     private DistributionMode GetSelectedMode()
     {
         return MoveRadioButton.IsChecked == true ? DistributionMode.Move : DistributionMode.Copy;
-    }
-
-    private static int CalculatePlannedFolderCount(int imageCount, int filesPerFolder)
-    {
-        if (imageCount <= 0)
-        {
-            return 0;
-        }
-
-        return (int)Math.Ceiling(imageCount / (double)filesPerFolder);
     }
 
     private static string GetModeLabel(DistributionMode mode)
