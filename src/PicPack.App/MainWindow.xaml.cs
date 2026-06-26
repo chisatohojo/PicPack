@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using Forms = System.Windows.Forms;
 using MessageBox = System.Windows.MessageBox;
+using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace PicPack.App;
 
@@ -53,7 +54,34 @@ public partial class MainWindow : Window
             return;
         }
 
-        await RefreshPreviewAsync();
+        try
+        {
+            await RefreshPreviewAsync();
+        }
+        catch (Exception exception)
+        {
+            StatusTextBlock.Text = exception.Message;
+        }
+    }
+
+    private void DecreaseFilesPerFolderButton_Click(object sender, RoutedEventArgs e)
+    {
+        StepNumber(FilesPerFolderTextBox, -1);
+    }
+
+    private void IncreaseFilesPerFolderButton_Click(object sender, RoutedEventArgs e)
+    {
+        StepNumber(FilesPerFolderTextBox, 1);
+    }
+
+    private void DecreaseFolderCountButton_Click(object sender, RoutedEventArgs e)
+    {
+        StepNumber(FolderCountTextBox, -1);
+    }
+
+    private void IncreaseFolderCountButton_Click(object sender, RoutedEventArgs e)
+    {
+        StepNumber(FolderCountTextBox, 1);
     }
 
     private async void RunButton_Click(object sender, RoutedEventArgs e)
@@ -297,6 +325,17 @@ public partial class MainWindow : Window
     private bool TryReadFolderCount(out int folderCount)
     {
         return int.TryParse(FolderCountTextBox.Text, out folderCount) && folderCount >= 1;
+    }
+
+    private static void StepNumber(WpfTextBox textBox, int delta)
+    {
+        if (!int.TryParse(textBox.Text, out var currentValue))
+        {
+            currentValue = 1;
+        }
+
+        var nextValue = Math.Max(1, currentValue + delta);
+        textBox.Text = nextValue.ToString();
     }
 
     private DistributionMode GetSelectedMode()

@@ -23,6 +23,25 @@
             <Setter Property="Padding" Value="10,8" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
+        <Style x:Key="NumberTextBox" TargetType="TextBox">
+            <Setter Property="Width" Value="64" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Padding" Value="8,7" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Focusable" Value="False" />
+        </Style>
+        <Style x:Key="StepperButton" TargetType="Button">
+            <Setter Property="Width" Value="38" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="MinWidth" Value="38" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#243142" />
         </Style>
@@ -118,21 +137,57 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="設定" Style="{StaticResource SectionTitle}" />
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,14">
-                        <TextBlock Text="1フォルダあたりの枚数" VerticalAlignment="Center" Margin="0,0,14,0" />
+                    <Grid Grid.Row="1" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="170" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="1フォルダあたりの枚数" VerticalAlignment="Center" Margin="0,0,14,0" />
+                        <Button Grid.Column="1"
+                                Content="-"
+                                Style="{StaticResource StepperButton}"
+                                Click="DecreaseFilesPerFolderButton_Click"
+                                ToolTip="1減らす" />
                         <TextBox x:Name="FilesPerFolderTextBox"
+                                 Grid.Column="2"
                                  Text="3"
-                                 Width="90"
+                                 Style="{StaticResource NumberTextBox}"
+                                 Margin="8,0"
                                  TextChanged="OptionsChanged" />
-                    </StackPanel>
+                        <Button Grid.Column="3"
+                                Content="+"
+                                Style="{StaticResource StepperButton}"
+                                Click="IncreaseFilesPerFolderButton_Click"
+                                ToolTip="1増やす" />
+                    </Grid>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,14">
-                        <TextBlock Text="使用するフォルダ数" VerticalAlignment="Center" Margin="0,0,14,0" />
+                    <Grid Grid.Row="2" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="170" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="使用するフォルダ数" VerticalAlignment="Center" Margin="0,0,14,0" />
+                        <Button Grid.Column="1"
+                                Content="-"
+                                Style="{StaticResource StepperButton}"
+                                Click="DecreaseFolderCountButton_Click"
+                                ToolTip="1減らす" />
                         <TextBox x:Name="FolderCountTextBox"
+                                 Grid.Column="2"
                                  Text="7"
-                                 Width="90"
+                                 Style="{StaticResource NumberTextBox}"
+                                 Margin="8,0"
                                  TextChanged="OptionsChanged" />
-                    </StackPanel>
+                        <Button Grid.Column="3"
+                                Content="+"
+                                Style="{StaticResource StepperButton}"
+                                Click="IncreaseFolderCountButton_Click"
+                                ToolTip="1増やす" />
+                    </Grid>
 
                     <StackPanel Grid.Row="3" Orientation="Horizontal">
                         <TextBlock Text="処理方式" VerticalAlignment="Center" Margin="0,0,14,0" />
