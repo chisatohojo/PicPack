@@ -11,6 +11,7 @@ namespace PicPack.App;
 public partial class MainWindow : Window
 {
     private readonly FolderDistributorService _folderDistributorService = new();
+    private readonly AppSettingsService _appSettingsService = new();
     private CancellationTokenSource? _cancellationTokenSource;
     private int _previewVersion;
     private bool _isInitialized;
@@ -19,6 +20,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        LoadSavedSettings();
         _isInitialized = true;
         _ = RefreshPreviewAsync();
     }
@@ -56,6 +58,7 @@ public partial class MainWindow : Window
 
         try
         {
+            SaveCurrentSettings();
             await RefreshPreviewAsync();
         }
         catch (Exception exception)
@@ -336,6 +339,27 @@ public partial class MainWindow : Window
 
         var nextValue = Math.Max(1, currentValue + delta);
         textBox.Text = nextValue.ToString();
+    }
+
+    private void LoadSavedSettings()
+    {
+        var settings = _appSettingsService.Load();
+        FilesPerFolderTextBox.Text = settings.FilesPerFolder.ToString();
+        FolderCountTextBox.Text = settings.FolderCount.ToString();
+    }
+
+    private void SaveCurrentSettings()
+    {
+        if (!TryReadFilesPerFolder(out var filesPerFolder) || !TryReadFolderCount(out var folderCount))
+        {
+            return;
+        }
+
+        _appSettingsService.Save(new AppSettings
+        {
+            FilesPerFolder = filesPerFolder,
+            FolderCount = folderCount
+        });
     }
 
     private DistributionMode GetSelectedMode()
